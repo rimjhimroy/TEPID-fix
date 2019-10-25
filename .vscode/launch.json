@@ -1,0 +1,17 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args":["-i","/media/parisod/Data2/rimjhim/vojtech/tepid/refinement/dip_are-tet_are/dip/insertions.bed","-p","5","-t","/media/parisod/Data2/rimjhim/vojtech/tepid/refinement/dip_are-tet_are/dip/Alyr_TEannot2_red2.bed","-n","/media/parisod/Data2/rimjhim/vojtech/tepid/refinement/dip_are-tet_are/dip/BEL_001_m","-c","/media/parisod/Data2/rimjhim/vojtech/tepid/refinement/dip_are-tet_are/dip/BEL_001_m/BEL_001_m.bam","-s","BEL_001_m/BEL_001_m.split.bam","-a","/media/parisod/Data2/rimjhim/vojtech/tepid/refinement/dip_are-tet_are/dip/list.txt"]
+
+        }
+    ]
+}

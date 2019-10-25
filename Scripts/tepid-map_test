@@ -58,9 +58,8 @@ map () {
   echo "Mapping ${fname}"
   bowtie2 --local --dovetail -p$proc --fr -q -R5 -N1 -x $index -X $size\
    -1 $fastq1 -2 $fastq2 \
-  | samblaster -e -u "${fname}.umap.fastq" \
-  | samtools view -b - > "${fname}_unsort.bam"
-
+  | samblaster -e -u "${fname}.umap.fastq" 
+ 
   yaha -t $proc -x $yhindex -q "${fname}.umap.fastq" -L 11 -H 2000 -M 15 -osh stdout \
   | samblaster -s "${fname}.split.sam" > /dev/null
 
@@ -69,7 +68,7 @@ map () {
   rm "${fname}.split.sam"
 
   echo "Sorting alignment"
-  samtools sort -@ $proc -o "${fname}.bam" "${fname}_unsort.bam"
+  samtools sort -@ $proc -o "${fname}" "${fname}_unsort.bam"
   rm "${fname}_unsort.bam"
 
   echo "Indexing alignment"

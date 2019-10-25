@@ -12,6 +12,39 @@ from time import ctime
 import sys
 
 
+def refine(options):
+    """
+    Refine TE insertion and deletion calls within a group of related samples
+    Use indel calls from other samples in the group, inspect areas of the genome in samples where
+    indel was not called, and look for evidence of the same indel with much lower
+    read count threshold
+    """
+    
+    te = pybedtools.BedTool(options.te).sort()
+    names = readNames(options.all_samples)
+    if options.insertions is not False:
+        insertions = getOtherLines(names, options.insertions)
+    if options.deletions is not False:
+        deletions = getOtherLines(names, options.deletions)  # format ([data], [inverse_accessions])
+    print "Processing "+options.name
+    chrom_sizes = check_bam(options.conc, options.proc, options.prefix)
+    check_bam(options.split, options.proc, options.prefix, make_new_index=True)
+    cov = calc_cov(options.conc, 100000, 120000)
+    concordant = pysam.AlignmentFile(options.conc, 'rb')
+    split_alignments = pysam.AlignmentFile(options.split, 'rb')
+    name_indexed = pysam.IndexedReads(split_alignments)
+    name_indexed.build()
+    if options.deletions is not False:
+        print "  checking deletions"
+        process_missed(deletions, "deletion", concordant, split_alignments, name_indexed, options.name, te, cov/5, chrom_sizes)
+    else:
+        pass
+    if options.insertions is not False:
+        print "  checking insertions"
+        process_missed(insertions, "insertion", concordant, split_alignments, name_indexed, options.name, te, cov/10, chrom_sizes)
+    else:
+        pass
+
 def readNames(names):
     n = []
     with open(names, 'r') as infile:
@@ -219,38 +252,6 @@ def process_missed(data, indel, concordant, split_alignments, name_indexed, acc,
             else:
                 pass
 
-
-def refine(options):
-    """
-    Refine TE insertion and deletion calls within a group of related samples
-    Use indel calls from other samples in the group, inspect areas of the genome in samples where
-    indel was not called, and look for evidence of the same indel with much lower
-    read count threshold
-    """
-    te = pybedtools.BedTool(options.te).sort()
-    names = readNames(options.all_samples)
-    if options.insertions is not False:
-        insertions = getOtherLines(names, options.insertions)
-    if options.deletions is not False:
-        deletions = getOtherLines(names, options.deletions)  # format ([data], [inverse_accessions])
-    print "Processing "+options.name
-    chrom_sizes = check_bam(options.conc, options.proc, options.prefix)
-    check_bam(options.split, options.proc, options.prefix, make_new_index=True)
-    cov = calc_cov(options.conc, 100000, 120000)
-    concordant = pysam.AlignmentFile(options.conc, 'rb')
-    split_alignments = pysam.AlignmentFile(options.split, 'rb')
-    name_indexed = pysam.IndexedReads(split_alignments)
-    name_indexed.build()
-    if options.deletions is not False:
-        print "  checking deletions"
-        process_missed(deletions, "deletion", concordant, split_alignments, name_indexed, options.name, te, cov/5, chrom_sizes)
-    else:
-        pass
-    if options.insertions is not False:
-        print "  checking insertions"
-        process_missed(insertions, "insertion", concordant, split_alignments, name_indexed, options.name, te, cov/10, chrom_sizes)
-    else:
-        pass
 
 
 def _overlap(start1, stop1, start2, stop2, d=0):
@@ -712,10 +713,7 @@ def calc_cov(bam_name, start, stop):
     # get chromosome names
     nms = []
     for i in bam.header['SQ']:
-        if 'scaffold' in i['SN']:
-            pass
-        else:
-            nms.append(i['SN'])
+        nms.append(i['SN'])
     x = 0
     l = 0
     for read in bam.pileup(nms[0], start, stop):
