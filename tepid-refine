@@ -20,6 +20,7 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--conc', help='bam file from bowtie2', required=True)
     parser.add_argument('-s', '--split', help='split reads bam file from yaha', required=True)
     parser.add_argument('-a', '--all_samples', help='List of all sample names', required=True)
+    
     options = parser.parse_args()
 
     # generate a unique string prefix for the intermediate files
