@@ -31,6 +31,16 @@
             "args":["-i","-p","5","-n","BOR_01","-t","~/tepid_arabidopsis/input/teann/Alyrata_TEs.AtIDs.all_1.bed","-c","BOR_01/BOR_01.bam","-s","BOR_01/BOR_01.split.bam"],
             "cwd": "~/tepid_arabidopsis/output/merged/"
 
+        },
+        {
+            "name": "Python: merge_ins",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args":["-f","insertions"],
+            "cwd": "/gpfs/homefs/ips/rchoudhury/tepid_arabidopsis/output/merged"
+
         }
     ]
 }
