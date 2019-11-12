@@ -5,12 +5,22 @@ TEPID uses illumina sequencing reads to identify novel TE variants. First, reads
 
 ## Installation
 
-```
-git clone git@github.com:ListerLab/TEPID.git
+You need miniconda to install the requirements.
+
+```bash
+git clone https://github.com/rimjhimroy/TEPID-fix.git
 cd ./TEPID
-pip install -r requirements.txt
+conda env create --file env/tepid.yaml
+conda activate tepid
 python setup.py install
 ```
+## Fix TEPID
+
+Here TEPID is Version: 0.8  
+Tepid-map has been modified at the sorting step with to adapt to the samtools version:
+`samtools sort -@ $proc -o "${fname}.bam" "${fname}_unsort.bam"`  
+Tepid-discover has been modified in calc_cov method to accomodate genomes with no chromosomes but only scaffolds  
+Tepid-refine has been modified to fix error related to global variable "options" not being found in the function `process_merged`.  
 
 ## Testing
 
@@ -30,7 +40,7 @@ There are two modes that TEPID can be run in, single-end or paired-end mode.
 
 Use the `tepid-map` script to map paired-end reads.
 
-```
+```bash
 tepid-map -- map paired-end data using bowtie2 and yaha
   -h  show help and exit
   -x  path to bowtie2 index
@@ -50,7 +60,7 @@ This will look for the two fastq file specified using the `-1` and `-2` options,
 
 Use the `tepid-map-se` script to map single-end reads.  
 
-```
+```bash
 tepid-map-se -- map single-end data using bowtie2 and yaha
   -h  show help and exit
   -x  path to bowtie2 index
@@ -76,7 +86,7 @@ Next, go to the directory containing your bam files and run the `tepid-discover`
 
 ### Step 2: TE variant discovery
 
-```
+```bash
 usage: tepid-discover [-h] [--version] [-k] [-d | -i] [--strict] [--mask MASK]
                       [-D DISCORDANT] [-p PROC] -n NAME -c CONC -s SPLIT -t TE
                       [--se]
@@ -120,7 +130,7 @@ Output files:
 
 ### Step 3: Refinement and genotyping
 
-```
+```bash
 usage: tepid-refine [-h] [--version] [-k] [-i INSERTIONS] [-d DELETIONS]
                     [-p PROC] -t TE -n NAME -c CONC -s SPLIT -a ALL_SAMPLES
 
@@ -148,12 +158,12 @@ optional arguments:
 
 This step is optional and for groups of related samples only, such as a population or generational study. First, a file containing all idenetified variants for the group needs to be generated, with a list of samples that contain each insertion as a column in a bedfile:
 
-```
+```bash
 [chromosome name]	[start position]	[stop position]	[TE name] [comma-separated list of samples containing insertion]
 ```
 
 For example:
-```
+```bash
 chr1	23094	23200	AT1TE69285	Sorbo,Nok-3
 ```
 
