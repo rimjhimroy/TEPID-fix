@@ -16,6 +16,7 @@ python setup.py install
 ```
 ## Fix TEPID
 
+By: Rimjhim Roy Choudhury  
 Here TEPID is Version: 0.8  
 Tepid-map has been modified at the sorting step with to adapt to the samtools version:
 `samtools sort -@ $proc -o "${fname}.bam" "${fname}_unsort.bam"`  
