@@ -21,7 +21,7 @@ Here TEPID is Version: 0.8
 Tepid-map has been modified at the sorting step with to adapt to the samtools version:
 `samtools sort -@ $proc -o "${fname}.bam" "${fname}_unsort.bam"`  
 Tepid-discover has been modified in calc_cov method to accomodate genomes with no chromosomes but only scaffolds  
-Tepid-refine has been modified to fix error related to global variable "options" not being found in the function `process_merged`.  
+Tepid-refine has been modified to fix error related to global variable "options" not being found in the function `process_missed`.  
 
 ## Testing
 
